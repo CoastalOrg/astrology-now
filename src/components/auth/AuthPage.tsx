@@ -87,8 +87,8 @@ const AuthPage = () => {
             </div>
             <Moon className="h-6 w-6 text-slate-600" />
           </div>
-          <CardTitle className="font-light text-slate-800 text-2xl">Astrology Now
-Your Daily Horoscrope and Personal Astrology Consultant </CardTitle>
+          <CardTitle className="font-light text-slate-800 text-2xl">ASTROLOGY NOW
+Your Daily Horoscope and Personal Astrology Consultant </CardTitle>
           <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
         </CardHeader>
         
