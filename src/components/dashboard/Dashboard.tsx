@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { useSecureAuth } from '@/hooks/useSecureAuth';
 import HoroscopeSection from './HoroscopeSection';
 import AiChatSection from './AiChatSection';
-import ProfileSection from './ProfileSection';
+import SecureProfileSection from './SecureProfileSection';
 import { Button } from '@/components/ui/button';
 import { Star, MessageSquare, User, LogOut, Sparkles } from 'lucide-react';
 import {
@@ -15,28 +16,19 @@ import {
 } from '@/components/ui/sheet';
 
 const Dashboard = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut } = useAuth();
+  const { requireAuth } = useSecureAuth();
   const [activeSection, setActiveSection] = useState('horoscope');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    console.log('Dashboard user:', user?.email);
-  }, [user]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          <p className="text-slate-600">Loading your cosmic dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null; // This will be handled by the main App component
-  }
+    try {
+      requireAuth();
+      console.log('Dashboard user:', user?.email);
+    } catch (error) {
+      console.error('Authentication error in dashboard:', error);
+    }
+  }, [user, requireAuth]);
 
   const menuItems = [
     {
@@ -63,7 +55,7 @@ const Dashboard = () => {
       case 'ai-chat':
         return <AiChatSection />;
       case 'profile':
-        return <ProfileSection />;
+        return <SecureProfileSection />;
       default:
         return <HoroscopeSection />;
     }
