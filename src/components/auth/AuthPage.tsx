@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -80,7 +81,7 @@ const AuthPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
       
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md space-y-6">
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center items-center gap-2 mb-2">
@@ -96,26 +97,6 @@ const AuthPage = () => {
               <span className="text-lg">Your Daily Horoscope and Personal Astrology Consultant</span>
             </CardTitle>
             <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
-            
-            {/* Enhanced Test credentials section */}
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mt-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Sparkles className="h-4 w-4 text-blue-600" />
-                <h3 className="text-sm font-semibold text-blue-800">Test Account Available</h3>
-              </div>
-              <div className="text-sm text-blue-700 mb-3 space-y-1">
-                <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
-                <p><strong>Password:</strong> Test001</p>
-              </div>
-              <Button 
-                onClick={handleTestLogin}
-                variant="outline" 
-                size="sm" 
-                className="w-full text-sm bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
-              >
-                Fill Test Credentials
-              </Button>
-            </div>
           </CardHeader>
           
           <CardContent>
@@ -209,6 +190,34 @@ const AuthPage = () => {
                 </form>
               </TabsContent>
             </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* Separate Test Credentials Section */}
+        <Card className="bg-blue-50/95 backdrop-blur-sm border-2 border-blue-200 shadow-xl">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-2">
+                <Sparkles className="h-6 w-6 text-blue-600" />
+                <h3 className="text-lg font-bold text-blue-800">Test Account Available</h3>
+              </div>
+              <div className="bg-white/70 rounded-lg p-4 space-y-2">
+                <div className="text-base text-blue-800">
+                  <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
+                  <p><strong>Password:</strong> Test001</p>
+                </div>
+              </div>
+              <Button 
+                onClick={handleTestLogin}
+                className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-semibold"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Fill Test Credentials
+              </Button>
+              <p className="text-sm text-blue-600">
+                Click the button above to automatically fill the login form with test credentials
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
