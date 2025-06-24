@@ -1,15 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-import Sidebar from './Sidebar';
 import HoroscopeSection from './HoroscopeSection';
 import AiChatSection from './AiChatSection';
 import ProfileSection from './ProfileSection';
+import { Button } from '@/components/ui/button';
+import { Star, MessageSquare, User, LogOut, Sparkles } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const [activeSection, setActiveSection] = useState('horoscope');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     console.log('Dashboard user:', user?.email);
@@ -30,6 +38,24 @@ const Dashboard = () => {
     return null; // This will be handled by the main App component
   }
 
+  const menuItems = [
+    {
+      id: 'horoscope',
+      label: 'Daily Horoscope',
+      icon: Star,
+    },
+    {
+      id: 'ai-chat',
+      label: 'Ask AI',
+      icon: MessageSquare,
+    },
+    {
+      id: 'profile',
+      label: 'Profile',
+      icon: User,
+    },
+  ];
+
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'horoscope':
@@ -43,66 +69,85 @@ const Dashboard = () => {
     }
   };
 
+  const handleMenuItemClick = (sectionId: string) => {
+    setActiveSection(sectionId);
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50">
-      <div className="flex h-screen">
-        {/* Sidebar - Hidden on mobile */}
-        <div className="hidden lg:block">
-          <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-        </div>
-
-        {/* Mobile Navigation */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-light text-slate-800">Astrology Now</h1>
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-slate-100"
-            >
-              <div className="w-6 h-6 flex flex-col justify-center items-center">
-                <span className={`block w-5 h-0.5 bg-slate-600 transition-all ${isMobileMenuOpen ? 'rotate-45 translate-y-1' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-slate-600 mt-1 transition-all ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-slate-600 mt-1 transition-all ${isMobileMenuOpen ? '-rotate-45 -translate-y-1' : ''}`}></span>
-              </div>
-            </button>
+      {/* Header with Hamburger Menu */}
+      <header className="bg-white/95 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-purple-600" />
+            <h1 className="text-xl font-light text-slate-800">Astrology Now</h1>
           </div>
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="absolute top-full left-0 right-0 bg-white border-b border-slate-200 p-4">
-              <div className="space-y-2">
-                {[
-                  { id: 'horoscope', label: 'Daily Horoscope' },
-                  { id: 'ai-chat', label: 'Ask AI' },
-                  { id: 'profile', label: 'Profile' },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveSection(item.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'hover:bg-slate-50'
-                    }`}
+          
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm" className="p-2">
+                <div className="w-6 h-6 flex flex-col justify-center items-center">
+                  <span className="block w-5 h-0.5 bg-slate-600 mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-slate-600 mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-slate-600"></span>
+                </div>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-80">
+              <SheetHeader>
+                <SheetTitle className="text-left">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    Navigation
+                  </div>
+                </SheetTitle>
+              </SheetHeader>
+              
+              <div className="mt-8 space-y-2">
+                <div className="text-sm text-slate-600 mb-4">
+                  Welcome back, {user?.email?.split('@')[0]}
+                </div>
+                
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Button
+                      key={item.id}
+                      variant={activeSection === item.id ? "default" : "ghost"}
+                      className={`w-full justify-start h-12 ${
+                        activeSection === item.id
+                          ? "bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 border border-purple-200"
+                          : "hover:bg-slate-50"
+                      }`}
+                      onClick={() => handleMenuItemClick(item.id)}
+                    >
+                      <Icon className="h-5 w-5 mr-3" />
+                      {item.label}
+                    </Button>
+                  );
+                })}
+                
+                <div className="pt-4 mt-4 border-t border-slate-200">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-slate-600 hover:text-slate-800"
+                    onClick={signOut}
                   >
-                    {item.label}
-                  </button>
-                ))}
+                    <LogOut className="h-4 w-4 mr-3" />
+                    Sign Out
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            </SheetContent>
+          </Sheet>
         </div>
+      </header>
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-auto">
-          <div className="p-6 lg:p-8 mt-16 lg:mt-0">
-            {renderActiveSection()}
-          </div>
-        </div>
-      </div>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        {renderActiveSection()}
+      </main>
     </div>
   );
 };
