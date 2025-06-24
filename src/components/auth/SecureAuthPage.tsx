@@ -162,8 +162,7 @@ const SecureAuthPage = () => {
                 Fill Test Credentials
               </Button>
               <p className="text-sm text-blue-600">
-                Click the button above to automatically fill the login form with test credentials
-              </p>
+            </p>
             </div>
           </CardContent>
         </Card>
