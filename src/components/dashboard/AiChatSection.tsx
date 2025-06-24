@@ -8,27 +8,30 @@ import { MessageSquare, Send, Sparkles, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
+
+type ZodiacSign = Database['public']['Enums']['zodiac_sign'];
 
 const zodiacSigns = [
-  { value: 'aries', label: 'Aries ♈' },
-  { value: 'taurus', label: 'Taurus ♉' },
-  { value: 'gemini', label: 'Gemini ♊' },
-  { value: 'cancer', label: 'Cancer ♋' },
-  { value: 'leo', label: 'Leo ♌' },
-  { value: 'virgo', label: 'Virgo ♍' },
-  { value: 'libra', label: 'Libra ♎' },
-  { value: 'scorpio', label: 'Scorpio ♏' },
-  { value: 'sagittarius', label: 'Sagittarius ♐' },
-  { value: 'capricorn', label: 'Capricorn ♑' },
-  { value: 'aquarius', label: 'Aquarius ♒' },
-  { value: 'pisces', label: 'Pisces ♓' },
+  { value: 'aries' as ZodiacSign, label: 'Aries ♈' },
+  { value: 'taurus' as ZodiacSign, label: 'Taurus ♉' },
+  { value: 'gemini' as ZodiacSign, label: 'Gemini ♊' },
+  { value: 'cancer' as ZodiacSign, label: 'Cancer ♋' },
+  { value: 'leo' as ZodiacSign, label: 'Leo ♌' },
+  { value: 'virgo' as ZodiacSign, label: 'Virgo ♍' },
+  { value: 'libra' as ZodiacSign, label: 'Libra ♎' },
+  { value: 'scorpio' as ZodiacSign, label: 'Scorpio ♏' },
+  { value: 'sagittarius' as ZodiacSign, label: 'Sagittarius ♐' },
+  { value: 'capricorn' as ZodiacSign, label: 'Capricorn ♑' },
+  { value: 'aquarius' as ZodiacSign, label: 'Aquarius ♒' },
+  { value: 'pisces' as ZodiacSign, label: 'Pisces ♓' },
 ];
 
 const AiChatSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [question, setQuestion] = useState('');
-  const [selectedZodiac, setSelectedZodiac] = useState<string>('');
+  const [selectedZodiac, setSelectedZodiac] = useState<ZodiacSign | ''>('');
   const [loading, setLoading] = useState(false);
   const [conversations, setConversations] = useState<any[]>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -150,7 +153,7 @@ const AiChatSection = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={selectedZodiac} onValueChange={setSelectedZodiac}>
+          <Select value={selectedZodiac} onValueChange={(value: ZodiacSign) => setSelectedZodiac(value)}>
             <SelectTrigger>
               <SelectValue placeholder="Optional: Select zodiac sign for context" />
             </SelectTrigger>

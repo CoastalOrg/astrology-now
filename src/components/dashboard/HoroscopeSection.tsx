@@ -4,30 +4,33 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Star, Sparkles, Refresh } from 'lucide-react';
+import { Star, Sparkles, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
+
+type ZodiacSign = Database['public']['Enums']['zodiac_sign'];
 
 const zodiacSigns = [
-  { value: 'aries', label: 'Aries ♈', emoji: '♈' },
-  { value: 'taurus', label: 'Taurus ♉', emoji: '♉' },
-  { value: 'gemini', label: 'Gemini ♊', emoji: '♊' },
-  { value: 'cancer', label: 'Cancer ♋', emoji: '♋' },
-  { value: 'leo', label: 'Leo ♌', emoji: '♌' },
-  { value: 'virgo', label: 'Virgo ♍', emoji: '♍' },
-  { value: 'libra', label: 'Libra ♎', emoji: '♎' },
-  { value: 'scorpio', label: 'Scorpio ♏', emoji: '♏' },
-  { value: 'sagittarius', label: 'Sagittarius ♐', emoji: '♐' },
-  { value: 'capricorn', label: 'Capricorn ♑', emoji: '♑' },
-  { value: 'aquarius', label: 'Aquarius ♒', emoji: '♒' },
-  { value: 'pisces', label: 'Pisces ♓', emoji: '♓' },
+  { value: 'aries' as ZodiacSign, label: 'Aries ♈', emoji: '♈' },
+  { value: 'taurus' as ZodiacSign, label: 'Taurus ♉', emoji: '♉' },
+  { value: 'gemini' as ZodiacSign, label: 'Gemini ♊', emoji: '♊' },
+  { value: 'cancer' as ZodiacSign, label: 'Cancer ♋', emoji: '♋' },
+  { value: 'leo' as ZodiacSign, label: 'Leo ♌', emoji: '♌' },
+  { value: 'virgo' as ZodiacSign, label: 'Virgo ♍', emoji: '♍' },
+  { value: 'libra' as ZodiacSign, label: 'Libra ♎', emoji: '♎' },
+  { value: 'scorpio' as ZodiacSign, label: 'Scorpio ♏', emoji: '♏' },
+  { value: 'sagittarius' as ZodiacSign, label: 'Sagittarius ♐', emoji: '♐' },
+  { value: 'capricorn' as ZodiacSign, label: 'Capricorn ♑', emoji: '♑' },
+  { value: 'aquarius' as ZodiacSign, label: 'Aquarius ♒', emoji: '♒' },
+  { value: 'pisces' as ZodiacSign, label: 'Pisces ♓', emoji: '♓' },
 ];
 
 const HoroscopeSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [selectedSign, setSelectedSign] = useState<string>('');
+  const [selectedSign, setSelectedSign] = useState<ZodiacSign | ''>('');
   const [horoscope, setHoroscope] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -63,7 +66,7 @@ const HoroscopeSection = () => {
     }
   };
 
-  const fetchTodaysHoroscope = async (sign: string) => {
+  const fetchTodaysHoroscope = async (sign: ZodiacSign) => {
     if (!sign || !user) return;
 
     try {
@@ -166,7 +169,7 @@ const HoroscopeSection = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={selectedSign} onValueChange={setSelectedSign}>
+          <Select value={selectedSign} onValueChange={(value: ZodiacSign) => setSelectedSign(value)}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Choose your zodiac sign" />
             </SelectTrigger>
@@ -191,7 +194,7 @@ const HoroscopeSection = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Refresh className="h-4 w-4" />
+                <RefreshCw className="h-4 w-4" />
                 {horoscope ? 'Refresh Horoscope' : 'Generate Horoscope'}
               </div>
             )}

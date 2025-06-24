@@ -9,20 +9,23 @@ import { User, Save, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
+
+type ZodiacSign = Database['public']['Enums']['zodiac_sign'];
 
 const zodiacSigns = [
-  { value: 'aries', label: 'Aries ♈' },
-  { value: 'taurus', label: 'Taurus ♉' },
-  { value: 'gemini', label: 'Gemini ♊' },
-  { value: 'cancer', label: 'Cancer ♋' },
-  { value: 'leo', label: 'Leo ♌' },
-  { value: 'virgo', label: 'Virgo ♍' },
-  { value: 'libra', label: 'Libra ♎' },
-  { value: 'scorpio', label: 'Scorpio ♏' },
-  { value: 'sagittarius', label: 'Sagittarius ♐' },
-  { value: 'capricorn', label: 'Capricorn ♑' },
-  { value: 'aquarius', label: 'Aquarius ♒' },
-  { value: 'pisces', label: 'Pisces ♓' },
+  { value: 'aries' as ZodiacSign, label: 'Aries ♈' },
+  { value: 'taurus' as ZodiacSign, label: 'Taurus ♉' },
+  { value: 'gemini' as ZodiacSign, label: 'Gemini ♊' },
+  { value: 'cancer' as ZodiacSign, label: 'Cancer ♋' },
+  { value: 'leo' as ZodiacSign, label: 'Leo ♌' },
+  { value: 'virgo' as ZodiacSign, label: 'Virgo ♍' },
+  { value: 'libra' as ZodiacSign, label: 'Libra ♎' },
+  { value: 'scorpio' as ZodiacSign, label: 'Scorpio ♏' },
+  { value: 'sagittarius' as ZodiacSign, label: 'Sagittarius ♐' },
+  { value: 'capricorn' as ZodiacSign, label: 'Capricorn ♑' },
+  { value: 'aquarius' as ZodiacSign, label: 'Aquarius ♒' },
+  { value: 'pisces' as ZodiacSign, label: 'Pisces ♓' },
 ];
 
 const ProfileSection = () => {
@@ -32,7 +35,7 @@ const ProfileSection = () => {
   const [profile, setProfile] = useState({
     full_name: '',
     email: '',
-    zodiac_sign: '',
+    zodiac_sign: '' as ZodiacSign | '',
     birth_date: '',
   });
 
@@ -161,7 +164,7 @@ const ProfileSection = () => {
               <Label htmlFor="zodiac_sign">Zodiac Sign</Label>
               <Select
                 value={profile.zodiac_sign}
-                onValueChange={(value) => handleInputChange('zodiac_sign', value)}
+                onValueChange={(value: ZodiacSign) => handleInputChange('zodiac_sign', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select your zodiac sign" />
