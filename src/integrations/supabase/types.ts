@@ -9,7 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      ai_conversations: {
+        Row: {
+          ai_response: string
+          created_at: string
+          id: string
+          question: string
+          user_id: string
+          zodiac_context: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Insert: {
+          ai_response: string
+          created_at?: string
+          id?: string
+          question: string
+          user_id: string
+          zodiac_context?: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Update: {
+          ai_response?: string
+          created_at?: string
+          id?: string
+          question?: string
+          user_id?: string
+          zodiac_context?: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Relationships: []
+      }
+      horoscope_readings: {
+        Row: {
+          ai_insights: string | null
+          created_at: string
+          daily_horoscope: string | null
+          id: string
+          reading_date: string
+          user_id: string
+          zodiac_sign: Database["public"]["Enums"]["zodiac_sign"]
+        }
+        Insert: {
+          ai_insights?: string | null
+          created_at?: string
+          daily_horoscope?: string | null
+          id?: string
+          reading_date?: string
+          user_id: string
+          zodiac_sign: Database["public"]["Enums"]["zodiac_sign"]
+        }
+        Update: {
+          ai_insights?: string | null
+          created_at?: string
+          daily_horoscope?: string | null
+          id?: string
+          reading_date?: string
+          user_id?: string
+          zodiac_sign?: Database["public"]["Enums"]["zodiac_sign"]
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          zodiac_sign: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          zodiac_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          zodiac_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +104,19 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      zodiac_sign:
+        | "aries"
+        | "taurus"
+        | "gemini"
+        | "cancer"
+        | "leo"
+        | "virgo"
+        | "libra"
+        | "scorpio"
+        | "sagittarius"
+        | "capricorn"
+        | "aquarius"
+        | "pisces"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +231,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      zodiac_sign: [
+        "aries",
+        "taurus",
+        "gemini",
+        "cancer",
+        "leo",
+        "virgo",
+        "libra",
+        "scorpio",
+        "sagittarius",
+        "capricorn",
+        "aquarius",
+        "pisces",
+      ],
+    },
   },
 } as const
