@@ -11,6 +11,9 @@ import { useSecureAuth } from '@/hooks/useSecureAuth';
 import { profileSchema, sanitizeHtml } from '@/utils/validation';
 import { getSafeErrorMessage, SecureError } from '@/utils/security';
 import { User, Calendar, Star } from 'lucide-react';
+import type { Database } from '@/integrations/supabase/types';
+
+type ZodiacSign = Database['public']['Enums']['zodiac_sign'];
 
 const SecureProfileSection = () => {
   const { requireAuth } = useSecureAuth();
@@ -100,11 +103,11 @@ const SecureProfileSection = () => {
       const userId = requireAuth();
       setSaving(true);
 
-      // Sanitize inputs
+      // Sanitize inputs and properly type the zodiac_sign
       const sanitizedProfile = {
         full_name: sanitizeHtml(profile.full_name),
         email: profile.email.trim().toLowerCase(),
-        zodiac_sign: profile.zodiac_sign || null,
+        zodiac_sign: (profile.zodiac_sign || null) as ZodiacSign | null,
         birth_date: profile.birth_date || null,
         updated_at: new Date().toISOString(),
       };
