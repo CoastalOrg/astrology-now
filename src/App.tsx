@@ -8,21 +8,39 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
 import SecureAuthPage from "@/components/auth/SecureAuthPage";
 import Dashboard from "@/components/dashboard/Dashboard";
-import { getCSPHeader } from "@/utils/security";
+import { getSecurityHeaders, generateNonce } from "@/utils/security";
 
 const queryClient = new QueryClient();
 
-// Security headers setup
+// Enhanced security headers setup
 const SecurityHeaders = () => {
   useEffect(() => {
-    // Set CSP header via meta tag (for client-side)
-    const metaCSP = document.createElement('meta');
-    metaCSP.httpEquiv = 'Content-Security-Policy';
-    metaCSP.content = getCSPHeader();
-    document.head.appendChild(metaCSP);
+    // Generate nonce for CSP
+    const nonce = generateNonce();
+    
+    // Set enhanced security headers via meta tags
+    const securityHeaders = getSecurityHeaders(nonce);
+    
+    // Remove existing security meta tags
+    const existingMetas = document.querySelectorAll('meta[http-equiv*="Content-Security-Policy"], meta[http-equiv*="X-Frame-Options"]');
+    existingMetas.forEach(meta => meta.remove());
+    
+    // Add new security headers
+    Object.entries(securityHeaders).forEach(([name, value]) => {
+      const meta = document.createElement('meta');
+      meta.httpEquiv = name;
+      meta.content = value;
+      document.head.appendChild(meta);
+    });
+
+    // Set additional security attributes
+    document.documentElement.setAttribute('data-nonce', nonce);
 
     return () => {
-      document.head.removeChild(metaCSP);
+      // Cleanup on unmount
+      const metas = document.querySelectorAll('meta[http-equiv*="Content-Security-Policy"], meta[http-equiv*="X-Frame-Options"], meta[http-equiv*="X-Content-Type-Options"], meta[http-equiv*="X-XSS-Protection"]');
+      metas.forEach(meta => meta.remove());
+      document.documentElement.removeAttribute('data-nonce');
     };
   }, []);
 
