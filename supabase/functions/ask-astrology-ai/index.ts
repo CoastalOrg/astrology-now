@@ -60,7 +60,7 @@ serve(async (req) => {
           { role: 'system', content: systemMessage },
           { role: 'user', content: question }
         ],
-        max_tokens: 250,
+        max_tokens: 300,
         temperature: 0.7,
       }),
     });

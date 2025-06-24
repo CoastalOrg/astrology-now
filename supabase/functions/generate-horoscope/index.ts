@@ -63,7 +63,7 @@ serve(async (req) => {
           { role: 'system', content: 'You are a skilled astrologer providing daily horoscope readings.' },
           { role: 'user', content: prompt }
         ],
-        max_tokens: 200,
+        max_tokens: 300,
         temperature: 0.7,
       }),
     });
@@ -101,7 +101,7 @@ serve(async (req) => {
           { role: 'system', content: 'You are an expert astrologer providing astrological insights.' },
           { role: 'user', content: insightsPrompt }
         ],
-        max_tokens: 100,
+        max_tokens: 300,
         temperature: 0.7,
       }),
     });
