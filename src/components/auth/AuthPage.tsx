@@ -97,16 +97,23 @@ const AuthPage = () => {
             </CardTitle>
             <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
             
-            {/* Test credentials section */}
-            <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border">
-              <p className="mb-1">Test Account: myhoroscope001@gmail.com | Test001</p>
+            {/* Enhanced Test credentials section */}
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mt-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Sparkles className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-semibold text-blue-800">Test Account Available</h3>
+              </div>
+              <div className="text-sm text-blue-700 mb-3 space-y-1">
+                <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
+                <p><strong>Password:</strong> Test001</p>
+              </div>
               <Button 
                 onClick={handleTestLogin}
                 variant="outline" 
                 size="sm" 
-                className="text-xs h-6 px-2"
+                className="w-full text-sm bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
               >
-                Use Test Login
+                Fill Test Credentials
               </Button>
             </div>
           </CardHeader>
