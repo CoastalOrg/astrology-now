@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { authSchema } from '@/utils/validation';
 import { getSafeErrorMessage, SecureError, checkRateLimit, logSecurityEvent, generateCSRFToken } from '@/utils/security';
 import { Eye, EyeOff, Sparkles } from 'lucide-react';
+
 const SecureAuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -121,7 +122,7 @@ const SecureAuthPage = () => {
   };
   const handleTestLogin = () => {
     setEmail('myhoroscope001@gmail.com');
-    setPassword('Test001');
+    setPassword('TestUser0001');
     setIsSignUp(false);
   };
   return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 flex items-center justify-center p-4">
@@ -190,7 +191,7 @@ const SecureAuthPage = () => {
               <div className="bg-white/70 rounded-lg p-4 space-y-2">
                 <div className="text-base text-blue-800">
                   <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
-                  <p><strong>Password:</strong> Test001</p>
+                  <p><strong>Password:</strong> TestUser0001</p>
                 </div>
               </div>
               <Button onClick={handleTestLogin} className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-semibold">
@@ -203,4 +204,5 @@ const SecureAuthPage = () => {
       </div>
     </div>;
 };
+
 export default SecureAuthPage;
