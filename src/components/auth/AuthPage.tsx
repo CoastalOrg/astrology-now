@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Star, Moon, TestTube } from 'lucide-react';
+import { Sparkles, Star, Moon } from 'lucide-react';
 
 const AuthPage = () => {
   const [loading, setLoading] = useState(false);
@@ -81,30 +80,7 @@ const AuthPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
       
-      <div className="w-full max-w-md space-y-4">
-        {/* Testing Credentials Card */}
-        <Card className="bg-amber-50/90 backdrop-blur-sm border-amber-200 shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <TestTube className="h-4 w-4 text-amber-600" />
-              <h3 className="text-sm font-medium text-amber-800">Test Account</h3>
-            </div>
-            <div className="text-xs text-amber-700 space-y-1">
-              <p>Email: <span className="font-mono bg-amber-100 px-1 rounded">myhoroscope001@gmail.com</span></p>
-              <p>Password: <span className="font-mono bg-amber-100 px-1 rounded">Test001</span></p>
-            </div>
-            <Button 
-              onClick={handleTestLogin}
-              variant="outline" 
-              size="sm" 
-              className="w-full mt-2 text-amber-700 border-amber-300 hover:bg-amber-100"
-            >
-              Use Test Credentials
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Main Auth Card */}
+      <div className="w-full max-w-md">
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center items-center gap-2 mb-2">
@@ -120,6 +96,19 @@ const AuthPage = () => {
               <span className="text-lg">Your Daily Horoscope and Personal Astrology Consultant</span>
             </CardTitle>
             <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
+            
+            {/* Embedded test credentials */}
+            <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border">
+              <p className="mb-1">Test Account: myhoroscope001@gmail.com | Test001</p>
+              <Button 
+                onClick={handleTestLogin}
+                variant="outline" 
+                size="sm" 
+                className="text-xs h-6 px-2"
+              >
+                Use Test Login
+              </Button>
+            </div>
           </CardHeader>
           
           <CardContent>
