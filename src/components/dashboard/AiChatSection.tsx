@@ -166,13 +166,22 @@ const AiChatSection = () => {
             </SelectContent>
           </Select>
 
-          <Textarea
-            placeholder="Ask about love, career, health, or any astrological topic..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            rows={4}
-            className="resize-none"
-          />
+          <div className="space-y-2">
+            <Textarea
+              placeholder="Ask about love, career, health, or any astrological topic..."
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              rows={4}
+              className="resize-none"
+              maxLength={200}
+            />
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500">Maximum 200 characters</span>
+              <span className={`${question.length > 180 ? 'text-red-500' : 'text-slate-500'}`}>
+                {question.length}/200
+              </span>
+            </div>
+          </div>
 
           <Button
             onClick={askAI}
