@@ -97,7 +97,7 @@ const AuthPage = () => {
             </CardTitle>
             <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
             
-            {/* Embedded test credentials */}
+            {/* Test credentials section */}
             <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border">
               <p className="mb-1">Test Account: myhoroscope001@gmail.com | Test001</p>
               <Button 
