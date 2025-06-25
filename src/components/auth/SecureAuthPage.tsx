@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import { authSchema } from '@/utils/validation';
 import { getSafeErrorMessage, SecureError, checkRateLimit, logSecurityEvent, generateCSRFToken } from '@/utils/security';
 import { Eye, EyeOff, Sparkles } from 'lucide-react';
-
 const SecureAuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -131,7 +130,7 @@ const SecureAuthPage = () => {
           <CardHeader className="text-center bg-violet-200 rounded-full">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="h-6 w-6 text-purple-600" />
-              <CardTitle className="text-2xl">Astrology Now</CardTitle>
+              <CardTitle className="text-2xl">AstrologyNow</CardTitle>
             </div>
             <CardDescription>
               {isSignUp ? 'Create your cosmic account' : 'Welcome back to your cosmic journey'}
@@ -204,5 +203,4 @@ const SecureAuthPage = () => {
       </div>
     </div>;
 };
-
 export default SecureAuthPage;
