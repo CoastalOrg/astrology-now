@@ -1,218 +1,254 @@
-import React, { useState } from 'react';
-import { useAuth } from './AuthProvider';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, Star, Moon, Sun } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
+import { authSchema } from '@/utils/validation';
+import { getSafeErrorMessage, SecureError, checkRateLimit, logSecurityEvent, generateCSRFToken } from '@/utils/security';
+import { Eye, EyeOff, Sparkles } from 'lucide-react';
 
 const SecureAuthPage = () => {
-  const { signIn, signUp, loading } = useAuth();
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [csrfToken, setCsrfToken] = useState('');
+  const {
+    toast
+  } = useToast();
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Generate CSRF token on component mount
+  useEffect(() => {
+    setCsrfToken(generateCSRFToken());
+  }, []);
+  const validateForm = (): boolean => {
     try {
-      await signIn(email, password);
-      toast.success('Welcome back to your cosmic journey!');
+      authSchema.parse({
+        email,
+        password
+      });
+      if (isSignUp && password !== confirmPassword) {
+        setErrors({
+          confirmPassword: 'Passwords do not match'
+        });
+        return false;
+      }
+      setErrors({});
+      return true;
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in');
+      const newErrors: Record<string, string> = {};
+      error.errors?.forEach((err: any) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
     }
   };
-
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+    if (!validateForm()) return;
+
+    // Rate limiting check
+    const rateLimitKey = `auth:${email.toLowerCase()}`;
+    if (!checkRateLimit(rateLimitKey, 5)) {
+      toast({
+        title: "Too Many Attempts",
+        description: "Please wait 15 minutes before trying again.",
+        variant: "destructive"
+      });
       return;
     }
-
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
-      return;
-    }
-
+    setLoading(true);
     try {
-      await signUp(email, password, { full_name: fullName });
-      toast.success('Account created! Please check your email to verify your account.');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create account');
+      const sanitizedEmail = email.trim().toLowerCase();
+      if (isSignUp) {
+        const {
+          error
+        } = await supabase.auth.signUp({
+          email: sanitizedEmail,
+          password,
+          options: {
+            data: {
+              full_name: '',
+              // Will be updated in profile
+              csrf_token: csrfToken
+            }
+          }
+        });
+        if (error) throw new SecureError(error.message);
+        logSecurityEvent('USER_SIGNUP_SUCCESS', {
+          email: sanitizedEmail
+        });
+        toast({
+          title: "Account Created",
+          description: "Please check your email to verify your account."
+        });
+      } else {
+        const {
+          error
+        } = await supabase.auth.signInWithPassword({
+          email: sanitizedEmail,
+          password
+        });
+        if (error) {
+          logSecurityEvent('USER_LOGIN_FAILED', {
+            email: sanitizedEmail,
+            error: error.message
+          });
+          throw new SecureError(error.message);
+        }
+        logSecurityEvent('USER_LOGIN_SUCCESS', {
+          email: sanitizedEmail
+        });
+        toast({
+          title: "Welcome Back",
+          description: "Successfully signed in to your account."
+        });
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      toast({
+        title: "Authentication Failed",
+        description: getSafeErrorMessage(error),
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
-
-  return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80')`
-        }}
-      />
-      
-      {/* Gradient Overlay to blend with color scheme */}
-      <div className="absolute inset-0 bg-gradient-to-br from-steel/80 via-teal/60 to-rose/40" />
-      
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-steel/90 via-transparent to-transparent" />
-
-      {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="h-10 w-10 text-teal" />
-              <h1 className="text-4xl font-light text-white drop-shadow-lg">AstrologyNow</h1>
+  const handleTestLogin = () => {
+    setEmail('myhoroscope001@gmail.com');
+    setPassword('TestUser0001');
+    setIsSignUp(false);
+  };
+  return <div className="min-h-screen bg-gradient-to-br from-teal/20 to-rose/20 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
+        <Card className="w-full bg-gradient-to-br from-teal/10 to-steel/10 border-teal/30">
+          <CardHeader className="text-center bg-gradient-to-r from-teal/20 to-rose/20 rounded-t-lg">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Sparkles className="h-6 w-6 text-steel" />
+              <CardTitle className="text-2xl text-steel">AstrologyNow</CardTitle>
             </div>
-            <p className="text-white/90 text-lg drop-shadow-md">
-              Discover your cosmic destiny
-            </p>
-            <div className="flex items-center justify-center gap-4 mt-4 text-white/70">
-              <Star className="h-5 w-5" />
-              <Moon className="h-5 w-5" />
-              <Sun className="h-5 w-5" />
+            <CardDescription className="text-steel/80">
+              {isSignUp ? 'Create your cosmic account' : 'Welcome back to your cosmic journey'}
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="bg-gradient-to-br from-teal/5 to-rose/5 p-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Hidden CSRF token */}
+              <input type="hidden" name="csrf_token" value={csrfToken} />
+              
+              <div>
+                <Input 
+                  type="email" 
+                  placeholder="Email address" 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  required 
+                  maxLength={255} 
+                  autoComplete="email" 
+                  className={`border-steel/30 focus:border-teal ${errors.email ? 'border-red-500' : ''}`} 
+                />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              </div>
+              
+              <div className="relative">
+                <Input 
+                  type={showPassword ? 'text' : 'password'} 
+                  placeholder="Password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  required 
+                  maxLength={128} 
+                  autoComplete={isSignUp ? "new-password" : "current-password"} 
+                  className={`border-steel/30 focus:border-teal ${errors.password ? 'border-red-500' : ''}`} 
+                />
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1 text-steel hover:text-teal" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              </div>
+              
+              {isSignUp && (
+                <div>
+                  <Input 
+                    type="password" 
+                    placeholder="Confirm password" 
+                    value={confirmPassword} 
+                    onChange={e => setConfirmPassword(e.target.value)} 
+                    required 
+                    maxLength={128} 
+                    autoComplete="new-password" 
+                    className={`border-steel/30 focus:border-teal ${errors.confirmPassword ? 'border-red-500' : ''}`} 
+                  />
+                  {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+                </div>
+              )}
+              
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-teal to-steel hover:from-teal/80 hover:to-steel/80 text-white" 
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Sign In'}
+              </Button>
+            </form>
+            
+            <div className="text-center mt-4">
+              <Button 
+                variant="link" 
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setErrors({});
+                  setPassword('');
+                  setConfirmPassword('');
+                  setCsrfToken(generateCSRFToken());
+                }} 
+                className="text-steel hover:text-teal"
+              >
+                {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+              </Button>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Auth Card */}
-          <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-2xl">
-            <CardHeader className="text-center">
-              <CardTitle className="text-white text-2xl">Welcome</CardTitle>
-              <CardDescription className="text-white/80">
-                Begin your astrological journey today
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
-                  <TabsTrigger 
-                    value="signin" 
-                    className="text-white data-[state=active]:bg-teal/30 data-[state=active]:text-white"
-                  >
-                    Sign In
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="signup"
-                    className="text-white data-[state=active]:bg-rose/30 data-[state=active]:text-white"
-                  >
-                    Sign Up
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="signin" className="space-y-4 mt-6">
-                  <form onSubmit={handleSignIn} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-email" className="text-white">Email</Label>
-                      <Input
-                        id="signin-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-teal focus:ring-teal/20"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-password" className="text-white">Password</Label>
-                      <Input
-                        id="signin-password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-teal focus:ring-teal/20"
-                      />
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-gradient-to-r from-teal to-steel hover:from-teal/80 hover:to-steel/80 text-white font-medium py-2 transition-all duration-300"
-                      disabled={loading}
-                    >
-                      {loading ? 'Signing in...' : 'Sign In'}
-                    </Button>
-                  </form>
-                </TabsContent>
-
-                <TabsContent value="signup" className="space-y-4 mt-6">
-                  <form onSubmit={handleSignUp} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name" className="text-white">Full Name</Label>
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        placeholder="Enter your full name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-rose focus:ring-rose/20"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-white">Email</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-rose focus:ring-rose/20"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-white">Password</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="Create a password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-rose focus:ring-rose/20"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm-password" className="text-white">Confirm Password</Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        className="bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-rose focus:ring-rose/20"
-                      />
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-gradient-to-r from-rose to-olive hover:from-rose/80 hover:to-olive/80 text-white font-medium py-2 transition-all duration-300"
-                      disabled={loading}
-                    >
-                      {loading ? 'Creating account...' : 'Create Account'}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          {/* Footer */}
-          <div className="text-center mt-8 text-white/70 text-sm">
-            <p>✨ Your stars await ✨</p>
-          </div>
-        </div>
+        {/* Test Credentials Section */}
+        <Card className="bg-gradient-to-br from-olive/20 to-lime/20 border-olive/30">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-2">
+                <Sparkles className="h-6 w-6 text-olive" />
+                <h3 className="text-lg font-bold text-steel">Test Account Available</h3>
+              </div>
+              <div className="bg-white/70 rounded-lg p-4 space-y-2 border border-olive/20">
+                <div className="text-base text-steel">
+                  <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
+                  <p><strong>Password:</strong> TestUser0001</p>
+                </div>
+              </div>
+              <Button 
+                onClick={handleTestLogin} 
+                className="w-full bg-gradient-to-r from-olive to-lime hover:from-olive/80 hover:to-lime/80 text-white h-12 text-base font-semibold"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Fill Test Credentials
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default SecureAuthPage;
