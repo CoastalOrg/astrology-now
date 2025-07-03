@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { authSchema } from '@/utils/validation';
 import { getSafeErrorMessage, SecureError, checkRateLimit, logSecurityEvent, generateCSRFToken } from '@/utils/security';
 import { Eye, EyeOff, Sparkles } from 'lucide-react';
+
 const SecureAuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -124,55 +125,99 @@ const SecureAuthPage = () => {
     setPassword('TestUser0001');
     setIsSignUp(false);
   };
-  return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-teal/20 to-rose/20 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        <Card className="w-full bg-violet-200">
-          <CardHeader className="text-center bg-violet-200 rounded-full">
+        <Card className="w-full bg-gradient-to-br from-teal/10 to-steel/10 border-teal/30">
+          <CardHeader className="text-center bg-gradient-to-r from-teal/20 to-rose/20 rounded-t-lg">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles className="h-6 w-6 text-purple-600" />
-              <CardTitle className="text-2xl">AstrologyNow</CardTitle>
+              <Sparkles className="h-6 w-6 text-steel" />
+              <CardTitle className="text-2xl text-steel">AstrologyNow</CardTitle>
             </div>
-            <CardDescription>
+            <CardDescription className="text-steel/80">
               {isSignUp ? 'Create your cosmic account' : 'Welcome back to your cosmic journey'}
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="bg-violet-200">
+          <CardContent className="bg-gradient-to-br from-teal/5 to-rose/5 p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Hidden CSRF token */}
               <input type="hidden" name="csrf_token" value={csrfToken} />
               
               <div>
-                <Input type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} required maxLength={255} autoComplete="email" className={errors.email ? 'border-red-500' : ''} />
+                <Input 
+                  type="email" 
+                  placeholder="Email address" 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  required 
+                  maxLength={255} 
+                  autoComplete="email" 
+                  className={`border-steel/30 focus:border-teal ${errors.email ? 'border-red-500' : ''}`} 
+                />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
               
               <div className="relative">
-                <Input type={showPassword ? 'text' : 'password'} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required maxLength={128} autoComplete={isSignUp ? "new-password" : "current-password"} className={errors.password ? 'border-red-500' : ''} />
-                <Button type="button" variant="ghost" size="sm" className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1" onClick={() => setShowPassword(!showPassword)} tabIndex={-1}>
+                <Input 
+                  type={showPassword ? 'text' : 'password'} 
+                  placeholder="Password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  required 
+                  maxLength={128} 
+                  autoComplete={isSignUp ? "new-password" : "current-password"} 
+                  className={`border-steel/30 focus:border-teal ${errors.password ? 'border-red-500' : ''}`} 
+                />
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1 text-steel hover:text-teal" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  tabIndex={-1}
+                >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>
               
-              {isSignUp && <div>
-                  <Input type="password" placeholder="Confirm password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required maxLength={128} autoComplete="new-password" className={errors.confirmPassword ? 'border-red-500' : ''} />
+              {isSignUp && (
+                <div>
+                  <Input 
+                    type="password" 
+                    placeholder="Confirm password" 
+                    value={confirmPassword} 
+                    onChange={e => setConfirmPassword(e.target.value)} 
+                    required 
+                    maxLength={128} 
+                    autoComplete="new-password" 
+                    className={`border-steel/30 focus:border-teal ${errors.confirmPassword ? 'border-red-500' : ''}`} 
+                  />
                   {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
-                </div>}
+                </div>
+              )}
               
-              <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" disabled={loading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-teal to-steel hover:from-teal/80 hover:to-steel/80 text-white" 
+                disabled={loading}
+              >
                 {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Sign In'}
               </Button>
             </form>
             
             <div className="text-center mt-4">
-              <Button variant="link" onClick={() => {
-              setIsSignUp(!isSignUp);
-              setErrors({});
-              setPassword('');
-              setConfirmPassword('');
-              setCsrfToken(generateCSRFToken()); // Generate new CSRF token
-            }} className="text-purple-600 hover:text-purple-700">
+              <Button 
+                variant="link" 
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setErrors({});
+                  setPassword('');
+                  setConfirmPassword('');
+                  setCsrfToken(generateCSRFToken());
+                }} 
+                className="text-steel hover:text-teal"
+              >
                 {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
               </Button>
             </div>
@@ -180,20 +225,23 @@ const SecureAuthPage = () => {
         </Card>
 
         {/* Test Credentials Section */}
-        <Card className="bg-blue-50/95 backdrop-blur-sm border-2 border-blue-200 shadow-xl">
+        <Card className="bg-gradient-to-br from-olive/20 to-lime/20 border-olive/30">
           <CardContent className="p-6">
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className="h-6 w-6 text-blue-600" />
-                <h3 className="text-lg font-bold text-blue-800">Test Account Available</h3>
+                <Sparkles className="h-6 w-6 text-olive" />
+                <h3 className="text-lg font-bold text-steel">Test Account Available</h3>
               </div>
-              <div className="bg-white/70 rounded-lg p-4 space-y-2">
-                <div className="text-base text-blue-800">
+              <div className="bg-white/70 rounded-lg p-4 space-y-2 border border-olive/20">
+                <div className="text-base text-steel">
                   <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
                   <p><strong>Password:</strong> TestUser0001</p>
                 </div>
               </div>
-              <Button onClick={handleTestLogin} className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-semibold">
+              <Button 
+                onClick={handleTestLogin} 
+                className="w-full bg-gradient-to-r from-olive to-lime hover:from-olive/80 hover:to-lime/80 text-white h-12 text-base font-semibold"
+              >
                 <Sparkles className="h-4 w-4 mr-2" />
                 Fill Test Credentials
               </Button>

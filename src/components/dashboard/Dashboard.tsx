@@ -67,37 +67,37 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-teal/10 to-rose/10">
       {/* Header with Hamburger Menu */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-teal/20 to-steel/20 backdrop-blur-sm border-b border-teal/30 sticky top-0 z-50">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-purple-600" />
-            <h1 className="text-xl font-light text-slate-800">Astrology Now</h1>
+            <Sparkles className="h-6 w-6 text-steel" />
+            <h1 className="text-xl font-light text-steel">Astrology Now</h1>
           </div>
           
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2 hover:bg-teal/20">
                 <div className="w-6 h-6 flex flex-col justify-center items-center">
-                  <span className="block w-5 h-0.5 bg-slate-600 mb-1"></span>
-                  <span className="block w-5 h-0.5 bg-slate-600 mb-1"></span>
-                  <span className="block w-5 h-0.5 bg-slate-600"></span>
+                  <span className="block w-5 h-0.5 bg-steel mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-steel mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-steel"></span>
                 </div>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80">
+            <SheetContent side="right" className="w-80 bg-gradient-to-br from-teal/10 to-rose/10 border-teal/30">
               <SheetHeader>
                 <SheetTitle className="text-left">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-purple-600" />
-                    Navigation
+                    <Sparkles className="h-5 w-5 text-steel" />
+                    <span className="text-steel">Navigation</span>
                   </div>
                 </SheetTitle>
               </SheetHeader>
               
               <div className="mt-8 space-y-2">
-                <div className="text-sm text-slate-600 mb-4">
+                <div className="text-sm text-steel/80 mb-4">
                   Welcome back, {user?.email?.split('@')[0]}
                 </div>
                 
@@ -109,8 +109,8 @@ const Dashboard = () => {
                       variant={activeSection === item.id ? "default" : "ghost"}
                       className={`w-full justify-start h-12 ${
                         activeSection === item.id
-                          ? "bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 border border-purple-200"
-                          : "hover:bg-slate-50"
+                          ? "bg-gradient-to-r from-teal/20 to-rose/20 text-steel border border-teal/30"
+                          : "hover:bg-teal/10 text-steel/80 hover:text-steel"
                       }`}
                       onClick={() => handleMenuItemClick(item.id)}
                     >
@@ -120,10 +120,10 @@ const Dashboard = () => {
                   );
                 })}
                 
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-4 mt-4 border-t border-teal/20">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-slate-600 hover:text-slate-800"
+                    className="w-full justify-start text-steel/80 hover:text-steel hover:bg-rose/10"
                     onClick={signOut}
                   >
                     <LogOut className="h-4 w-4 mr-3" />
