@@ -126,6 +126,15 @@ const SecureAuthPage = () => {
     setIsSignUp(false);
   };
   return <div className="min-h-screen bg-gradient-to-br from-teal/20 to-rose/20 flex items-center justify-center p-4">
+      {/* Announcement Banner */}
+      <div className="fixed top-4 left-4 right-4 z-50 max-w-4xl mx-auto">
+        <div className="bg-gradient-to-r from-steel/90 to-teal/90 backdrop-blur-md text-white px-6 py-3 rounded-lg shadow-lg border border-white/20">
+          <p className="text-center font-medium text-sm md:text-base">
+            <strong>Stay tuned</strong> - this project will soon be replaced by a contact sharing and administration app
+          </p>
+        </div>
+      </div>
+      
       <div className="w-full max-w-md space-y-6">
         <Card className="w-full bg-gradient-to-br from-teal/10 to-steel/10 border-teal/30">
           <CardHeader className="text-center bg-gradient-to-r from-teal/20 to-rose/20 rounded-t-lg">
