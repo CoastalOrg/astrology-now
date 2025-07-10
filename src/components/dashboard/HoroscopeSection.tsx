@@ -133,16 +133,16 @@ const HoroscopeSection = () => {
       }
 
       const today = new Date().toISOString().split('T')[0];
+      
+      // Insert a new record each time (no more upsert since we removed unique constraint)
       const { data, error } = await supabase
         .from('horoscope_readings')
-        .upsert({
+        .insert({
           user_id: user.id,
           zodiac_sign: selectedSign,
           reading_date: today,
           daily_horoscope: response.data.horoscope,
           ai_insights: response.data.insights,
-        }, {
-          onConflict: 'user_id,reading_date'
         })
         .select()
         .single();
@@ -190,8 +190,7 @@ const HoroscopeSection = () => {
         .from('horoscope_readings')
         .select('*')
         .eq('user_id', user.id)
-        .neq('reading_date', new Date().toISOString().split('T')[0])
-        .order('reading_date', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(10);
 
       if (error) {
