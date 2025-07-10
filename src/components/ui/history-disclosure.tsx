@@ -37,40 +37,45 @@ export const HistoryDisclosure: React.FC<HistoryDisclosureProps> = ({
   }
 
   return (
-    <div className={`${maxHeight} overflow-y-auto`}>
-      <h3 className="flex items-center gap-2 text-lg font-medium text-nova-text-primary mb-4">
-        <Clock className="h-5 w-5 text-nova-text-secondary" />
-        {title}
+    <div className={`${maxHeight} overflow-y-auto w-full`}>
+      <h3 className="flex items-center gap-2 text-base sm:text-lg font-medium text-nova-text-primary mb-3 sm:mb-4 px-1">
+        <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-nova-text-secondary flex-shrink-0" />
+        <span className="truncate">{title}</span>
       </h3>
       
-      <Accordion type="multiple" className="space-y-2">
+      <Accordion type="multiple" className="space-y-2 w-full">
         {items.map((item) => (
           <AccordionItem
             key={item.id}
             value={item.id}
-            className="border border-white/20 rounded-lg px-4 bg-white/5 backdrop-blur-sm"
+            className="border border-white/20 rounded-lg px-2 sm:px-4 bg-white/5 backdrop-blur-sm w-full"
           >
             <AccordionTrigger className="py-3 hover:no-underline">
-              <div className="flex items-center justify-between w-full pr-4">
-                <div className="flex-1 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-2 sm:pr-4 gap-2 sm:gap-0">
+                <div className="flex-1 min-w-0 text-left">
                   <div className="font-medium text-nova-text-primary text-sm mb-1">
                     {item.title}
                   </div>
-                  <div className="text-xs text-nova-text-secondary truncate max-w-md">
+                  <div className="text-xs text-nova-text-secondary line-clamp-2 overflow-hidden text-ellipsis leading-relaxed">
                     {item.preview}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 ml-4">
+                <div className="flex items-center gap-2 ml-0 sm:ml-4 flex-shrink-0">
                   {item.badge && (
                     <Badge 
                       variant={item.badge.variant || 'secondary'}
-                      className="text-xs bg-nova-action/20 text-nova-action border-nova-action/30"
+                      className="text-xs bg-nova-action/20 text-nova-action border-nova-action/30 hidden sm:inline-flex"
                     >
                       {item.badge.label}
                     </Badge>
                   )}
-                  <div className="text-xs text-nova-text-secondary">
-                    {new Date(item.timestamp).toLocaleDateString()}
+                  <div className="text-xs text-nova-text-secondary whitespace-nowrap">
+                    <span className="hidden sm:inline">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </span>
+                    <span className="sm:hidden">
+                      {new Date(item.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
                   </div>
                 </div>
               </div>
