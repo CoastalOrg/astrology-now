@@ -67,69 +67,69 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal/10 to-rose/10">
+    <div className="min-h-screen bg-nova-primary">
       {/* Header with Hamburger Menu */}
-      <header className="bg-gradient-to-r from-teal/20 to-steel/20 backdrop-blur-sm border-b border-teal/30 sticky top-0 z-50">
+      <header className="bg-nova-card-start/20 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-steel" />
-            <h1 className="text-xl font-light text-steel">Astrology Now</h1>
+            <Sparkles className="h-6 w-6 text-nova-text-primary" />
+            <h1 className="text-xl font-light text-nova-text-primary">Astrology Now</h1>
           </div>
           
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-2 hover:bg-teal/20">
+              <Button variant="ghost" size="sm" className="p-2 hover:bg-white/10">
                 <div className="w-6 h-6 flex flex-col justify-center items-center">
-                  <span className="block w-5 h-0.5 bg-steel mb-1"></span>
-                  <span className="block w-5 h-0.5 bg-steel mb-1"></span>
-                  <span className="block w-5 h-0.5 bg-steel"></span>
+                  <span className="block w-5 h-0.5 bg-nova-text-primary mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-nova-text-primary mb-1"></span>
+                  <span className="block w-5 h-0.5 bg-nova-text-primary"></span>
                 </div>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-gradient-to-br from-teal/10 to-rose/10 border-teal/30">
+            <SheetContent side="right" className="w-80 bg-nova-primary border-white/20">
               <SheetHeader>
                 <SheetTitle className="text-left">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-steel" />
-                    <span className="text-steel">Navigation</span>
-                  </div>
-                </SheetTitle>
-              </SheetHeader>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-nova-text-primary" />
+                  <span className="text-nova-text-primary">Navigation</span>
+                </div>
+              </SheetTitle>
+            </SheetHeader>
+            
+            <div className="mt-8 space-y-2">
+              <div className="text-sm text-nova-text-secondary mb-4">
+                Welcome back, {user?.email?.split('@')[0]}
+              </div>
               
-              <div className="mt-8 space-y-2">
-                <div className="text-sm text-steel/80 mb-4">
-                  Welcome back, {user?.email?.split('@')[0]}
-                </div>
-                
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Button
-                      key={item.id}
-                      variant={activeSection === item.id ? "default" : "ghost"}
-                      className={`w-full justify-start h-12 ${
-                        activeSection === item.id
-                          ? "bg-gradient-to-r from-teal/20 to-rose/20 text-steel border border-teal/30"
-                          : "hover:bg-teal/10 text-steel/80 hover:text-steel"
-                      }`}
-                      onClick={() => handleMenuItemClick(item.id)}
-                    >
-                      <Icon className="h-5 w-5 mr-3" />
-                      {item.label}
-                    </Button>
-                  );
-                })}
-                
-                <div className="pt-4 mt-4 border-t border-teal/20">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                return (
                   <Button
-                    variant="ghost"
-                    className="w-full justify-start text-steel/80 hover:text-steel hover:bg-rose/10"
-                    onClick={signOut}
+                    key={item.id}
+                    variant={activeSection === item.id ? "default" : "ghost"}
+                    className={`w-full justify-start h-12 ${
+                      activeSection === item.id
+                        ? "bg-nova-action text-nova-text-primary border border-white/20"
+                        : "hover:bg-white/10 text-nova-text-secondary hover:text-nova-text-primary"
+                    }`}
+                    onClick={() => handleMenuItemClick(item.id)}
                   >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Sign Out
+                    <Icon className="h-5 w-5 mr-3" />
+                    {item.label}
                   </Button>
-                </div>
+                );
+              })}
+              
+              <div className="pt-4 mt-4 border-t border-white/20">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-nova-text-secondary hover:text-nova-text-primary hover:bg-white/10"
+                  onClick={signOut}
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Sign Out
+                </Button>
+              </div>
               </div>
             </SheetContent>
           </Sheet>

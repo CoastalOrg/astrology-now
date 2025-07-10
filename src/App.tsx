@@ -52,10 +52,10 @@ const AppRoutes = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-nova-primary flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          <p className="text-slate-600">Loading your cosmic experience...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-nova-action"></div>
+          <p className="text-nova-secondary">Loading your cosmic experience...</p>
         </div>
       </div>
     );
@@ -89,8 +89,8 @@ function App() {
         <BrowserRouter>
           <AuthProvider>
             <Suspense fallback={
-              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+              <div className="min-h-screen bg-nova-primary flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-nova-action"></div>
               </div>
             }>
               <AppRoutes />

@@ -153,18 +153,18 @@ const HoroscopeSection = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-light text-slate-800 mb-2">Daily Horoscope</h2>
-          <p className="text-slate-600">Discover what the stars have in store for you today</p>
+          <h2 className="text-2xl font-light text-nova-text-primary mb-2">Daily Horoscope</h2>
+          <p className="text-nova-text-secondary">Discover what the stars have in store for you today</p>
         </div>
         <div className="text-4xl">
           {selectedZodiacInfo?.emoji || '✨'}
         </div>
       </div>
 
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+      <Card className="card-nova">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+            <Star className="h-5 w-5 text-nova-action" />
             Select Your Zodiac Sign
           </CardTitle>
         </CardHeader>
@@ -185,7 +185,7 @@ const HoroscopeSection = () => {
           <Button
             onClick={generateHoroscope}
             disabled={!selectedSign || loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            className="btn-nova w-full"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -203,28 +203,28 @@ const HoroscopeSection = () => {
       </Card>
 
       {horoscope && (
-        <Card className="bg-white/80 backdrop-blur-sm">
+        <Card className="card-nova">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-yellow-500" />
+              <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+                <Sparkles className="h-5 w-5 text-nova-action" />
                 Your Daily Reading
               </CardTitle>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+              <Badge variant="secondary" className="bg-nova-action/20 text-nova-action">
                 {new Date(horoscope.reading_date).toLocaleDateString()}
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-medium text-slate-800 mb-2">Today's Horoscope</h4>
-              <p className="text-slate-700 leading-relaxed">{horoscope.daily_horoscope}</p>
+              <h4 className="font-medium text-nova-text-primary mb-2">Today's Horoscope</h4>
+              <p className="text-nova-text-secondary leading-relaxed">{horoscope.daily_horoscope}</p>
             </div>
             
             {horoscope.ai_insights && (
-              <div className="border-t pt-4">
-                <h4 className="font-medium text-slate-800 mb-2">AI Insights</h4>
-                <p className="text-slate-600 leading-relaxed">{horoscope.ai_insights}</p>
+              <div className="border-t border-white/20 pt-4">
+                <h4 className="font-medium text-nova-text-primary mb-2">AI Insights</h4>
+                <p className="text-nova-text-secondary leading-relaxed">{horoscope.ai_insights}</p>
               </div>
             )}
           </CardContent>

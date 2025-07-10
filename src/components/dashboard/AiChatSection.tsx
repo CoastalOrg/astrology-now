@@ -139,16 +139,16 @@ const AiChatSection = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-light text-slate-800 mb-2">Ask AI</h2>
-          <p className="text-slate-600">Get personalized astrological insights and guidance</p>
+          <h2 className="text-2xl font-light text-nova-text-primary mb-2">Ask AI</h2>
+          <p className="text-nova-text-secondary">Get personalized astrological insights and guidance</p>
         </div>
-        <MessageSquare className="h-8 w-8 text-purple-600" />
+        <MessageSquare className="h-8 w-8 text-nova-action" />
       </div>
 
-      <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+      <Card className="card-nova">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-indigo-600" />
+          <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+            <Sparkles className="h-5 w-5 text-nova-action" />
             Ask Your Question
           </CardTitle>
         </CardHeader>
@@ -176,8 +176,8 @@ const AiChatSection = () => {
               maxLength={200}
             />
             <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500">Maximum 200 characters</span>
-              <span className={`${question.length > 180 ? 'text-red-500' : 'text-slate-500'}`}>
+              <span className="text-nova-text-secondary">Maximum 200 characters</span>
+              <span className={`${question.length > 180 ? 'text-nova-error' : 'text-nova-text-secondary'}`}>
                 {question.length}/200
               </span>
             </div>
@@ -186,7 +186,7 @@ const AiChatSection = () => {
           <Button
             onClick={askAI}
             disabled={!question.trim() || loading}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+            className="btn-nova w-full"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -204,29 +204,29 @@ const AiChatSection = () => {
       </Card>
 
       {conversations.length > 0 && (
-        <Card className="bg-white/80 backdrop-blur-sm">
+        <Card className="card-nova">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-slate-600" />
+            <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+              <Clock className="h-5 w-5 text-nova-text-secondary" />
               Recent Conversations
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {conversations.map((conversation) => (
-                <div key={conversation.id} className="border-l-4 border-purple-200 pl-4 space-y-2">
+                <div key={conversation.id} className="border-l-4 border-nova-action pl-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="font-medium text-slate-800">Q: {conversation.question}</p>
+                    <p className="font-medium text-nova-text-primary">Q: {conversation.question}</p>
                     {conversation.zodiac_context && (
-                      <span className="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded">
+                      <span className="text-sm text-nova-action bg-nova-action/20 px-2 py-1 rounded">
                         {zodiacSigns.find(s => s.value === conversation.zodiac_context)?.label}
                       </span>
                     )}
                   </div>
-                  <p className="text-slate-700 text-sm leading-relaxed">
+                  <p className="text-nova-text-secondary text-sm leading-relaxed">
                     <strong>A:</strong> {conversation.ai_response}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-nova-text-secondary">
                     {new Date(conversation.created_at).toLocaleString()}
                   </p>
                 </div>

@@ -78,25 +78,25 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-nova-primary flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
       
       <div className="w-full max-w-md space-y-6">
-        <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
+        <Card className="card-nova border-0 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center items-center gap-2 mb-2">
               <div className="relative">
-                <Star className="h-8 w-8 text-purple-600" />
-                <Sparkles className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1" />
+                <Star className="h-8 w-8 text-nova-action" />
+                <Sparkles className="h-4 w-4 text-nova-action absolute -top-1 -right-1" />
               </div>
-              <Moon className="h-6 w-6 text-slate-600" />
+              <Moon className="h-6 w-6 text-nova-text-secondary" />
             </div>
-            <CardTitle className="font-light text-slate-800 text-2xl">
+            <CardTitle className="font-light text-nova-text-primary text-2xl">
               ASTROLOGY NOW
               <br />
               <span className="text-lg">Your Daily Horoscope and Personal Astrology Consultant</span>
             </CardTitle>
-            <p className="text-slate-600 text-xl">Discover Your Cosmic Journey</p>
+            <p className="text-nova-text-secondary text-xl">Discover Your Cosmic Journey</p>
           </CardHeader>
           
           <CardContent>
@@ -134,7 +134,7 @@ const AuthPage = () => {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-11 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" 
+                    className="btn-nova w-full h-11" 
                     disabled={loading}
                   >
                     {loading ? "Signing in..." : "Sign In"}
@@ -182,7 +182,7 @@ const AuthPage = () => {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-11 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" 
+                    className="btn-nova w-full h-11" 
                     disabled={loading}
                   >
                     {loading ? "Creating account..." : "Sign Up"}
@@ -194,27 +194,27 @@ const AuthPage = () => {
         </Card>
 
         {/* Separate Test Credentials Section */}
-        <Card className="bg-blue-50/95 backdrop-blur-sm border-2 border-blue-200 shadow-xl">
+        <Card className="card-nova border-2 border-nova-action/50 shadow-xl">
           <CardContent className="p-6">
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className="h-6 w-6 text-blue-600" />
-                <h3 className="text-lg font-bold text-blue-800">Test Account Available</h3>
+                <Sparkles className="h-6 w-6 text-nova-action" />
+                <h3 className="text-lg font-bold text-nova-text-primary">Test Account Available</h3>
               </div>
-              <div className="bg-white/70 rounded-lg p-4 space-y-2">
-                <div className="text-base text-blue-800">
+              <div className="bg-white/10 rounded-lg p-4 space-y-2">
+                <div className="text-base text-nova-text-primary">
                   <p><strong>Email:</strong> myhoroscope001@gmail.com</p>
                   <p><strong>Password:</strong> Test001</p>
                 </div>
               </div>
               <Button 
                 onClick={handleTestLogin}
-                className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-semibold"
+                className="btn-nova w-full h-12 text-base font-semibold"
               >
                 <Sparkles className="h-4 w-4 mr-2" />
                 Fill Test Credentials
               </Button>
-              <p className="text-sm text-blue-600">
+              <p className="text-sm text-nova-text-secondary">
                 Click the button above to automatically fill the login form with test credentials
               </p>
             </div>
