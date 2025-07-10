@@ -5,6 +5,7 @@ import { HistoryDisclosure } from '@/components/ui/history-disclosure';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Star, Sparkles, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
@@ -36,6 +37,8 @@ const HoroscopeSection = () => {
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [horoscopeHistory, setHoroscopeHistory] = useState<any[]>([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [hasExistingHoroscope, setHasExistingHoroscope] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -88,8 +91,29 @@ const HoroscopeSection = () => {
       }
 
       setHoroscope(data);
+      setHasExistingHoroscope(!!data);
     } catch (error) {
       console.error('Error:', error);
+    }
+  };
+
+  const handleGenerateClick = async () => {
+    if (!selectedSign || !user) return;
+
+    // Check if horoscope already exists for today
+    const today = new Date().toISOString().split('T')[0];
+    const { data: existingHoroscope } = await supabase
+      .from('horoscope_readings')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('reading_date', today)
+      .eq('zodiac_sign', selectedSign)
+      .maybeSingle();
+
+    if (existingHoroscope) {
+      setShowConfirmDialog(true);
+    } else {
+      generateHoroscope();
     }
   };
 
@@ -97,6 +121,8 @@ const HoroscopeSection = () => {
     if (!selectedSign || !user) return;
 
     setLoading(true);
+    setShowConfirmDialog(false);
+    
     try {
       const response = await supabase.functions.invoke('generate-horoscope', {
         body: { zodiacSign: selectedSign }
@@ -115,6 +141,8 @@ const HoroscopeSection = () => {
           reading_date: today,
           daily_horoscope: response.data.horoscope,
           ai_insights: response.data.insights,
+        }, {
+          onConflict: 'user_id,reading_date'
         })
         .select()
         .single();
@@ -122,6 +150,7 @@ const HoroscopeSection = () => {
       if (error) throw error;
 
       setHoroscope(data);
+      setHasExistingHoroscope(true);
       
       // Update user profile with selected zodiac sign
       if (selectedSign !== userProfile?.zodiac_sign) {
@@ -134,9 +163,12 @@ const HoroscopeSection = () => {
         setUserProfile({ ...userProfile, zodiac_sign: selectedSign });
       }
 
+      // Refresh horoscope history
+      fetchHoroscopeHistory();
+
       toast({
         title: "Horoscope Generated!",
-        description: "Your daily horoscope has been created.",
+        description: hasExistingHoroscope ? "Your horoscope has been updated for today." : "Your daily horoscope has been created.",
       });
     } catch (error: any) {
       console.error('Error generating horoscope:', error);
@@ -209,7 +241,7 @@ const HoroscopeSection = () => {
           </Select>
 
           <Button
-            onClick={generateHoroscope}
+            onClick={handleGenerateClick}
             disabled={!selectedSign || loading}
             className="btn-nova w-full"
           >
@@ -221,7 +253,7 @@ const HoroscopeSection = () => {
             ) : (
               <div className="flex items-center gap-2">
                 <RefreshCw className="h-4 w-4" />
-                {horoscope ? 'Refresh Horoscope' : 'Generate Horoscope'}
+                {hasExistingHoroscope ? 'Generate New Horoscope' : 'Generate Horoscope'}
               </div>
             )}
           </Button>
@@ -278,6 +310,23 @@ const HoroscopeSection = () => {
           </CardContent>
         </Card>
       )}
+
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate New Horoscope?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You've already viewed your horoscope for today. I understand - life changes by the minute. Are you sure you want to generate another horoscope for today?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={generateHoroscope}>
+              Yes, Generate New Horoscope
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
