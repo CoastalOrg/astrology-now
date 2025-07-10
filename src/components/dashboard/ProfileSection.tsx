@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { HistoryDisclosure } from '@/components/ui/history-disclosure';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -121,16 +122,16 @@ const ProfileSection = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-light text-slate-800 mb-2">Profile</h2>
-          <p className="text-slate-600">Manage your personal information and preferences</p>
+          <h2 className="text-2xl font-light text-nova-text-primary mb-2">Profile</h2>
+          <p className="text-nova-text-secondary">Manage your personal information and preferences</p>
         </div>
-        <User className="h-8 w-8 text-purple-600" />
+        <User className="h-8 w-8 text-nova-action" />
       </div>
 
-      <Card className="bg-white/80 backdrop-blur-sm">
+      <Card className="card-nova">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5 text-slate-600" />
+          <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+            <User className="h-5 w-5 text-nova-action" />
             Personal Information
           </CardTitle>
         </CardHeader>
@@ -190,10 +191,10 @@ const ProfileSection = () => {
             </div>
           </div>
 
-          <Button
+            <Button
             onClick={saveProfile}
             disabled={loading}
-            className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            className="btn-nova w-full md:w-auto"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -210,24 +211,24 @@ const ProfileSection = () => {
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+      <Card className="card-nova">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 text-nova-text-primary">
+            <Calendar className="h-5 w-5 text-nova-action" />
             Account Information
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-slate-600 mb-1">Member since</p>
-              <p className="font-medium text-slate-800">
+              <p className="text-nova-text-secondary mb-1">Member since</p>
+              <p className="font-medium text-nova-text-primary">
                 {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
               </p>
             </div>
             <div>
-              <p className="text-slate-600 mb-1">User ID</p>
-              <p className="font-mono text-xs text-slate-600 break-all">
+              <p className="text-nova-text-secondary mb-1">User ID</p>
+              <p className="font-mono text-xs text-nova-text-secondary break-all">
                 {user?.id}
               </p>
             </div>

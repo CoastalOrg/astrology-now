@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { HistoryDisclosure } from '@/components/ui/history-disclosure';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -34,10 +35,12 @@ const HoroscopeSection = () => {
   const [horoscope, setHoroscope] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [horoscopeHistory, setHoroscopeHistory] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
       fetchUserProfile();
+      fetchHoroscopeHistory();
     }
   }, [user]);
 
@@ -147,6 +150,29 @@ const HoroscopeSection = () => {
     }
   };
 
+  const fetchHoroscopeHistory = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('horoscope_readings')
+        .select('*')
+        .eq('user_id', user.id)
+        .neq('reading_date', new Date().toISOString().split('T')[0])
+        .order('reading_date', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching horoscope history:', error);
+        return;
+      }
+
+      setHoroscopeHistory(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const selectedZodiacInfo = zodiacSigns.find(sign => sign.value === selectedSign);
 
   return (
@@ -227,6 +253,28 @@ const HoroscopeSection = () => {
                 <p className="text-nova-text-secondary leading-relaxed">{horoscope.ai_insights}</p>
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {horoscopeHistory.length > 0 && (
+        <Card className="card-nova">
+          <CardContent className="pt-6">
+            <HistoryDisclosure
+              title="Previous Horoscopes"
+              items={horoscopeHistory.map(reading => ({
+                id: reading.id,
+                title: `${zodiacSigns.find(s => s.value === reading.zodiac_sign)?.label} - ${new Date(reading.reading_date).toLocaleDateString()}`,
+                preview: reading.daily_horoscope?.slice(0, 120) + '...' || 'No horoscope text available',
+                content: reading.daily_horoscope + (reading.ai_insights ? '\n\nAI Insights: ' + reading.ai_insights : ''),
+                timestamp: reading.created_at,
+                badge: {
+                  label: zodiacSigns.find(s => s.value === reading.zodiac_sign)?.emoji || '✨',
+                  variant: 'secondary' as const
+                }
+              }))}
+              emptyMessage="No previous horoscopes yet. Generate your first one above!"
+            />
           </CardContent>
         </Card>
       )}

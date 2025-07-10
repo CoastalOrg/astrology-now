@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { HistoryDisclosure } from '@/components/ui/history-disclosure';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -205,33 +206,22 @@ const AiChatSection = () => {
 
       {conversations.length > 0 && (
         <Card className="card-nova">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-nova-text-primary">
-              <Clock className="h-5 w-5 text-nova-text-secondary" />
-              Recent Conversations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {conversations.map((conversation) => (
-                <div key={conversation.id} className="border-l-4 border-nova-action pl-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium text-nova-text-primary">Q: {conversation.question}</p>
-                    {conversation.zodiac_context && (
-                      <span className="text-sm text-nova-action bg-nova-action/20 px-2 py-1 rounded">
-                        {zodiacSigns.find(s => s.value === conversation.zodiac_context)?.label}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-nova-text-secondary text-sm leading-relaxed">
-                    <strong>A:</strong> {conversation.ai_response}
-                  </p>
-                  <p className="text-xs text-nova-text-secondary">
-                    {new Date(conversation.created_at).toLocaleString()}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <CardContent className="pt-6">
+            <HistoryDisclosure
+              title="Recent Conversations"
+              items={conversations.map(conversation => ({
+                id: conversation.id,
+                title: conversation.question,
+                preview: conversation.ai_response.slice(0, 100) + '...',
+                content: conversation.ai_response,
+                timestamp: conversation.created_at,
+                badge: conversation.zodiac_context ? {
+                  label: zodiacSigns.find(s => s.value === conversation.zodiac_context)?.label || '',
+                  variant: 'secondary' as const
+                } : undefined
+              }))}
+              emptyMessage="No conversations yet. Ask your first question above!"
+            />
           </CardContent>
         </Card>
       )}
