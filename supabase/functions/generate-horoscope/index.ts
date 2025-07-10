@@ -42,7 +42,8 @@ serve(async (req) => {
 
     const prompt = `Generate a personalized daily horoscope for ${zodiacSign}. 
     Make it insightful, positive, and practical. Include advice about love, career, and personal growth. 
-    Keep it between 100-150 words. Write in a warm, encouraging tone.`;
+    Keep it between 100-150 words. Write in a warm, encouraging tone.
+    Do not include any title, headers, or zodiac sign name in the response. Start directly with the horoscope content.`;
 
     const insightsPrompt = `Based on the ${zodiacSign} zodiac sign, provide 2-3 key astrological insights 
     for today. Focus on planetary influences, energy patterns, and how they might affect this person's day. 
@@ -148,8 +149,13 @@ serve(async (req) => {
       );
     }
 
-    const horoscope = horoscopeData.choices[0].message.content;
-    const insights = insightsData.choices[0].message.content;
+    let horoscope = horoscopeData.choices[0].message.content;
+    let insights = insightsData.choices[0].message.content;
+
+    // Clean up horoscope text - remove common prefixes
+    horoscope = horoscope.replace(/^\*\*Daily Horoscope for \w+\*\*\s*(Today,?\s*)?/i, '').trim();
+    horoscope = horoscope.replace(/^Daily Horoscope for \w+:?\s*(Today,?\s*)?/i, '').trim();
+    horoscope = horoscope.replace(/^Today,?\s*/i, '').trim();
 
     console.log('Horoscope length:', horoscope ? horoscope.length : 0);
     console.log('Insights length:', insights ? insights.length : 0);
