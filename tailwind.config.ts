@@ -20,6 +20,7 @@ export default {
 		},
 		extend: {
 			colors: {
+				// Core shadcn system colors mapped to Project Nova Dark
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -67,17 +68,26 @@ export default {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
 				},
-				// New color scheme
-				teal: 'hsl(var(--color-teal))',
-				olive: 'hsl(var(--color-olive))',
-				rose: 'hsl(var(--color-rose))',
-				steel: 'hsl(var(--color-steel))',
-				lime: 'hsl(var(--color-lime))'
+				// Project Nova Dark Semantic Colors
+				'nova-primary': 'hsl(var(--primary-background))',
+				'nova-card-start': 'hsl(var(--card-gradient-start))',
+				'nova-card-end': 'hsl(var(--card-gradient-end))',
+				'nova-action': 'hsl(var(--action-color))',
+				'nova-text-primary': 'hsl(var(--text-primary))',
+				'nova-text-secondary': 'hsl(var(--text-secondary))',
+				'nova-success': 'hsl(var(--utility-success))',
+				'nova-error': 'hsl(var(--utility-error))',
+				'nova-disabled': 'hsl(var(--utility-disabled))'
 			},
 			borderRadius: {
+				'nova': '12px', // Project Nova Dark default border radius
+				'nova-card': '20px', // Project Nova Dark card border radius
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			fontFamily: {
+				'nova': ['Inter', 'sans-serif']
 			},
 			keyframes: {
 				'accordion-down': {
